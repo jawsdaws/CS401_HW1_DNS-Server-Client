@@ -33,7 +33,8 @@ public class HW1_Client extends Application {
         taDisplay.setFont(Font.font("Courier New", 16));
         taDisplay.setPadding(new Insets(10, 10, 10, 10));
         taDisplay.setEditable(false);
-        taDisplay.setText("FUCKKK!!!!!");
+        taDisplay.setText("Welcome to the DNS Server." + "\n");
+        taDisplay.appendText("Welcome to the DNS Server." + "\n");
 
         vbox.setStyle("-fx-border-color: black");
         vbox.getChildren().add(taDisplay);
@@ -42,10 +43,12 @@ public class HW1_Client extends Application {
         primaryStage.setTitle("DNS Server");
         primaryStage.setScene(scene);
         primaryStage.show();
+        server();
+
     }
 
 
-    public static void main(String[] args) {
-        launch(args);
+    private void server() {
+        System.out.println("Cheese");
     }
 }
