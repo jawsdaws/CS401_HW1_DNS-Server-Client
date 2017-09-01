@@ -10,39 +10,41 @@ import java.net.UnknownHostException;
 
 public class HW1_Server {
 
+    private static int counter = 0;
+
     public static void main(String[] args) {
 
         InetAddress address = null;
+        ServerSocket serverSocket = null;
+        int port = 8019;
         String hostname = "localhost";
+
         System.out.println("Welcome to the DNS server.");
         System.out.println("The hostname is " + hostname);
 
         try {
             address = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            System.out.println("Unable to lookup ip address.");
         }
 
         System.out.println("The ip is " + address.getHostAddress());
-        ServerSocket serverSocket = null;
+
         try {
-            serverSocket = new ServerSocket(8019);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error listening on " + port);
         }
 
         while (true) {
             System.out.println("Listening for clients.");
-
-
             try {
-
                 Socket socket = serverSocket.accept();
                 ConnectionHandle connectionhandle = new ConnectionHandle(socket);
                 Thread thread = new Thread(connectionhandle);
                 thread.start();
             } catch (Exception E) {
-                //E.printStackTrace();
+                E.printStackTrace();
             }
         }
     }
@@ -58,6 +60,7 @@ public class HW1_Server {
         @Override
         public void run() {
             System.out.println("Connection.");
+            counter++;
             try {
                 DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
                 DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
@@ -66,7 +69,6 @@ public class HW1_Server {
                 //}
             } catch (IOException e) {
                 e.printStackTrace();
-                return;
             }
         }
     }
