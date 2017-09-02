@@ -1,6 +1,8 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -15,8 +17,9 @@ import java.net.Socket;
 public class HW1_Client extends Application {
 
     private VBox vbox;
+    private Label lDomainName;
     private Scene scene;
-    private TextArea taDisplay;
+    private TextField tfDomainName;
     private Socket socket;
     private DataInputStream inputFromServer;
     private DataOutputStream outputToServer;
@@ -27,7 +30,7 @@ public class HW1_Client extends Application {
     public HW1_Client() {
         vbox = new VBox();
         scene = new Scene(vbox, 500, 500);
-        taDisplay = new TextArea();
+        tfDomainName = new TextField();
     }
 
     @Override
@@ -46,8 +49,14 @@ public class HW1_Client extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        socket = new Socket("localhost", 8019);
-        inputFromServer = new DataInputStream(socket.getInputStream());
-        outputToServer = new DataOutputStream(socket.getOutputStream());
+        try {
+            socket = new Socket("localhost", 8019);
+            inputFromServer = new DataInputStream(socket.getInputStream());
+            outputToServer = new DataOutputStream(socket.getOutputStream());
+
+
+        } catch (Exception e) {
+
+        }
     }
 }
