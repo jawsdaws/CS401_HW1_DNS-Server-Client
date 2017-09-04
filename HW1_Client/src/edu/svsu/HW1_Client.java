@@ -1,11 +1,14 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,9 +18,12 @@ import java.net.Socket;
 
 public class HW1_Client extends Application {
 
-    private VBox vbox;
+    private GridPane grid;
+    private Label lHostnameToLookUp;
+    private Label lReturnedIpAddress;
+    private Button btnLookup;
     private Scene scene;
-    private TextArea taDisplay;
+    private TextField tfHostnameToLookUp;
     private Socket socket;
     private ObjectInputStream inputFromServer;
     private ObjectOutputStream outputToServer;
@@ -27,41 +33,53 @@ public class HW1_Client extends Application {
      * Default constructor.
      */
     public HW1_Client() {
-        vbox = new VBox();
-        scene = new Scene(vbox, 500, 500);
-        taDisplay = new TextArea();
-
-        addressString = "www.google.com";
+        grid = new GridPane();
+        scene = new Scene(grid, 500, 200);
+        tfHostnameToLookUp = new TextField();
+        lHostnameToLookUp = new Label("\"Hostname to lookup.\"");
+        lReturnedIpAddress = new Label();
+        btnLookup = new Button("Lookup");
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        taDisplay.setMinSize(500, 500);
-        taDisplay.setFont(Font.font("Courier New", 16));
-        taDisplay.setPadding(new Insets(10, 10, 10, 10));
-        taDisplay.setEditable(false);
-        taDisplay.setText("Welcome to the DNS Client." + "\n");
+        tfHostnameToLookUp.setMinSize(300, 10);
+        tfHostnameToLookUp.setFont(Font.font("Courier New", 16));
+        tfHostnameToLookUp.setPadding(new Insets(10, 10, 10, 10));
+        tfHostnameToLookUp.setEditable(true);
+        tfHostnameToLookUp.setText("Enter hostname to lookup here." + "\n");
 
-        vbox.setStyle("-fx-border-color: black");
-        vbox.getChildren().add(taDisplay);
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(10);
-        primaryStage.setTitle("DNS Server");
+        grid.setStyle("-fx-border-color: black");
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(tfHostnameToLookUp,1,1,1,1);
+        grid.add(btnLookup, 2,1,1,1);
+        grid.add(lReturnedIpAddress,1,2,1,1);
+
+        primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
 
 
-        try {
-            socket = new Socket("localhost", 8019);
-            inputFromServer = new ObjectInputStream(socket.getInputStream());
-            outputToServer = new ObjectOutputStream(socket.getOutputStream());
+        btnLookup.setOnAction((ActionEvent event) -> {
+            try {
+                String serverReturn;
+                socket = new Socket("localhost", 8019);
+                addressString = tfHostnameToLookUp.getText();
+                inputFromServer = new ObjectInputStream(socket.getInputStream());
+                outputToServer = new ObjectOutputStream(socket.getOutputStream());
 
-            outputToServer.writeObject(addressString);
-            taDisplay.setText(inputFromServer.readObject().toString());
+                outputToServer.writeObject(addressString);
+                lReturnedIpAddress.setText(inputFromServer.readObject().toString());
 
-        } catch (IOException e) {
+            } catch (IOException e) {
+                lReturnedIpAddress.setText("Unable to connect to the DNS server.");
 
-        }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
 
+            }
+
+        });
     }
 }

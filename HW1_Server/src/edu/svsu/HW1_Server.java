@@ -72,18 +72,14 @@ public class HW1_Server {
                 Object input =  inputFromClient.readObject();
                 try {
                     lookupAddress = InetAddress.getByName(input.toString());
+                    outputToClient.writeObject(lookupAddress.getHostAddress());
                 } catch (UnknownHostException e) {
                     System.out.println("Unable to lookup ip address.");
+                    outputToClient.writeObject("Unable to lookup ip address.");
                 }
-
-                outputToClient.writeObject(lookupAddress.getHostAddress());
-
-
-
             } catch (EOFException e) {
                 e.printStackTrace();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
