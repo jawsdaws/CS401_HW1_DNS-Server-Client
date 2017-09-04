@@ -1,7 +1,6 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -19,7 +18,6 @@ import java.net.Socket;
 public class HW1_Client extends Application {
 
     private GridPane grid;
-    private Label lHostnameToLookUp;
     private Label lReturnedIpAddress;
     private Button btnLookup;
     private Scene scene;
@@ -36,7 +34,6 @@ public class HW1_Client extends Application {
         grid = new GridPane();
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
-        lHostnameToLookUp = new Label("\"Hostname to lookup.\"");
         lReturnedIpAddress = new Label();
         btnLookup = new Button("Lookup");
     }
@@ -61,14 +58,13 @@ public class HW1_Client extends Application {
         primaryStage.show();
 
 
+        socket = new Socket("localhost", 8019);
+        inputFromServer = new ObjectInputStream(socket.getInputStream());
+        outputToServer = new ObjectOutputStream(socket.getOutputStream());
+
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
-                String serverReturn;
-                socket = new Socket("localhost", 8019);
                 addressString = tfHostnameToLookUp.getText();
-                inputFromServer = new ObjectInputStream(socket.getInputStream());
-                outputToServer = new ObjectOutputStream(socket.getOutputStream());
-
                 outputToServer.writeObject(addressString);
                 lReturnedIpAddress.setText(inputFromServer.readObject().toString());
 

@@ -43,6 +43,7 @@ public class HW1_Server {
             System.out.println("Listening for clients.");
             try {
                 Socket socket = serverSocket.accept();
+                System.out.println("Client connected");
                 ConnectionHandle connectionhandle = new ConnectionHandle(socket);
                 Thread thread = new Thread(connectionhandle);
                 thread.start();
@@ -62,23 +63,24 @@ public class HW1_Server {
 
         @Override
         public void run() {
-            System.out.println("Connection.");
-            counter++;
             try {
                 ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
 
 
-                Object input =  inputFromClient.readObject();
-                try {
-                    lookupAddress = InetAddress.getByName(input.toString());
-                    outputToClient.writeObject(lookupAddress.getHostAddress());
-                } catch (UnknownHostException e) {
-                    System.out.println("Unable to lookup ip address.");
-                    outputToClient.writeObject("Unable to lookup ip address.");
+                while (true) {
+                    Object input =  inputFromClient.readObject();
+                    System.out.println(input.toString());
+                    try {
+                        lookupAddress = InetAddress.getByName(input.toString());
+                        outputToClient.writeObject(lookupAddress.getHostAddress());
+                    } catch (UnknownHostException e) {
+                        System.out.println("Unable to lookup ip address.");
+                        outputToClient.writeObject("Unable to lookup ip address.");
+                    }
                 }
             } catch (EOFException e) {
-                e.printStackTrace();
+                System.out.println("Client disconnected");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
