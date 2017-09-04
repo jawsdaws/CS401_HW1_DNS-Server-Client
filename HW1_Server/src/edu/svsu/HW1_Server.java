@@ -1,7 +1,8 @@
 package edu.svsu;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -11,10 +12,12 @@ import java.net.UnknownHostException;
 public class HW1_Server {
 
     private static int counter = 0;
+    private static InetAddress hostAddress = null;
+    private static InetAddress lookupAddress = null;
 
     public static void main(String[] args) {
 
-        InetAddress address = null;
+
         ServerSocket serverSocket = null;
         int port = 8019;
         String hostname = "localhost";
@@ -23,12 +26,12 @@ public class HW1_Server {
         System.out.println("The hostname is " + hostname);
 
         try {
-            address = InetAddress.getByName(hostname);
+            hostAddress = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
             System.out.println("Unable to lookup ip address.");
         }
 
-        System.out.println("The ip is " + address.getHostAddress());
+        System.out.println("The ip is " + hostAddress.getHostAddress());
 
         try {
             serverSocket = new ServerSocket(port);
@@ -62,14 +65,30 @@ public class HW1_Server {
             System.out.println("Connection.");
             counter++;
             try {
-                DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
-                DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
-                //while(true){
-                    //System.out.println("FUCK");
-                //}
-            } catch (IOException e) {
+                ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
+
+
+                Object input =  inputFromClient.readObject();
+                try {
+                    lookupAddress = InetAddress.getByName(input.toString());
+                } catch (UnknownHostException e) {
+                    System.out.println("Unable to lookup ip address.");
+                }
+
+                outputToClient.writeObject(lookupAddress.getHostAddress());
+
+
+
+            } catch (EOFException e) {
                 e.printStackTrace();
             }
+            catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

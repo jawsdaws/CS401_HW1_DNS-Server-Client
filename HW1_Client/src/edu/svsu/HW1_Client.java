@@ -1,28 +1,27 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.TextArea;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 
 public class HW1_Client extends Application {
 
     private VBox vbox;
-    private Label lDomainName;
     private Scene scene;
-    private TextField tfDomainName;
+    private TextArea taDisplay;
     private Socket socket;
-    private DataInputStream inputFromServer;
-    private DataOutputStream outputToServer;
+    private ObjectInputStream inputFromServer;
+    private ObjectOutputStream outputToServer;
+    private String addressString;
 
     /**
      * Default constructor.
@@ -30,7 +29,9 @@ public class HW1_Client extends Application {
     public HW1_Client() {
         vbox = new VBox();
         scene = new Scene(vbox, 500, 500);
-        tfDomainName = new TextField();
+        taDisplay = new TextArea();
+
+        addressString = "www.google.com";
     }
 
     @Override
@@ -49,14 +50,18 @@ public class HW1_Client extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+
         try {
             socket = new Socket("localhost", 8019);
-            inputFromServer = new DataInputStream(socket.getInputStream());
-            outputToServer = new DataOutputStream(socket.getOutputStream());
+            inputFromServer = new ObjectInputStream(socket.getInputStream());
+            outputToServer = new ObjectOutputStream(socket.getOutputStream());
 
+            outputToServer.writeObject(addressString);
+            taDisplay.setText(inputFromServer.readObject().toString());
 
-        } catch (Exception e) {
+        } catch (IOException e) {
 
         }
+
     }
 }
