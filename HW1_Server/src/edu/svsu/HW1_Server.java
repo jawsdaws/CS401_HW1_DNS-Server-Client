@@ -97,7 +97,8 @@ public class HW1_Server {
 
         File file = new File("countfile.txt");
 
-        if (count == 0) {
+        //0 should only be passed in count if there is no file.
+        if (count == 0 && !file.exists()) {
             try {
                 file.createNewFile();
                 BufferedWriter bw;
@@ -109,6 +110,7 @@ public class HW1_Server {
             } catch (IOException e) {
 
             }
+        //If there is anything other than zero add it to the total.(negatives decrement)
         } else {
             try {
                 BufferedReader br;
