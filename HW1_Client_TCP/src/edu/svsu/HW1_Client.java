@@ -70,7 +70,7 @@ public class HW1_Client extends Application {
             inputFromServer = new ObjectInputStream(socket.getInputStream());
             outputToServer = new ObjectOutputStream(socket.getOutputStream());
             lConnectedStatus.setText("Connected");
-        } catch (IOException e) {}
+        } catch (Exception e) {}
 
 
         btnConnect.setOnAction((ActionEvent event) -> {
