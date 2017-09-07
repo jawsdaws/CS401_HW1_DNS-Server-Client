@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class HW1_Server {
+public class HW1_Server_TCP {
 
     private static int counter = 0;
     private static InetAddress hostAddress = null;
