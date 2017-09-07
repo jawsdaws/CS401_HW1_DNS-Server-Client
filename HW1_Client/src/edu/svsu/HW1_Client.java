@@ -19,7 +19,9 @@ public class HW1_Client extends Application {
 
     private GridPane grid;
     private Label lReturnedIpAddress;
+    private Label lConnectedStatus;
     private Button btnLookup;
+    private Button btnConnect;
     private Scene scene;
     private TextField tfHostnameToLookUp;
     private Socket socket;
@@ -35,7 +37,9 @@ public class HW1_Client extends Application {
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
         lReturnedIpAddress = new Label();
+        lConnectedStatus = new Label("Not Connected");
         btnLookup = new Button("Lookup");
+        btnConnect = new Button("Connect");
     }
 
     @Override
@@ -51,16 +55,35 @@ public class HW1_Client extends Application {
         grid.setVgap(10);
         grid.add(tfHostnameToLookUp,1,1,1,1);
         grid.add(btnLookup, 2,1,1,1);
+        grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
+        grid.add(lConnectedStatus,1,3,1,1);
+
 
         primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
 
 
-        socket = new Socket("localhost", 8019);
-        inputFromServer = new ObjectInputStream(socket.getInputStream());
-        outputToServer = new ObjectOutputStream(socket.getOutputStream());
+        try{
+            socket = new Socket("localhost", 8019);
+            inputFromServer = new ObjectInputStream(socket.getInputStream());
+            outputToServer = new ObjectOutputStream(socket.getOutputStream());
+            lConnectedStatus.setText("Connected");
+        } catch (IOException e) {}
+
+
+        btnConnect.setOnAction((ActionEvent event) -> {
+            if(socket == null) {
+                try {
+                    socket = new Socket("localhost", 8019);
+                    inputFromServer = new ObjectInputStream(socket.getInputStream());
+                    outputToServer = new ObjectOutputStream(socket.getOutputStream());
+                    lConnectedStatus.setText("Connected");
+                } catch (Exception e) {}
+            }
+        });
+
 
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
@@ -68,14 +91,14 @@ public class HW1_Client extends Application {
                 outputToServer.writeObject(addressString);
                 lReturnedIpAddress.setText(inputFromServer.readObject().toString());
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 lReturnedIpAddress.setText("Unable to connect to the DNS server.");
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-
+                try {
+                    socket.close();
+                    socket = null;
+                } catch (Exception e1) {}
+                lConnectedStatus.setText("Not Connected");
             }
-
         });
     }
 }
