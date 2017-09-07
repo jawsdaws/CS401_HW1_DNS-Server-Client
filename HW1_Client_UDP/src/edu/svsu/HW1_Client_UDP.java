@@ -79,7 +79,6 @@ public class HW1_Client_UDP extends Application {
                 outputStream = new ByteArrayOutputStream();
                 outputToServer = new ObjectOutputStream(outputStream);
                 outputToServer.writeObject(addressString);
-                System.out.println("FUCK!!!");
                 byte[] data = outputStream.toByteArray();
                 sendPacket = new DatagramPacket(data, data.length, serverAddress, port);
                 socket.send(sendPacket);

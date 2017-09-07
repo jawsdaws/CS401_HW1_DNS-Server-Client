@@ -8,7 +8,10 @@ public class HW1_Server_UDP {
     private static int counter = 0;
     private static InetAddress hostAddress = null;
     private static InetAddress lookupAddress = null;
-    private static DatagramSocket socket = null;
+    private static ObjectInputStream inputFromServer = null;
+    private static ByteArrayInputStream byteInput = null;
+    private static DatagramSocket datagramSocket = null;
+    private static DatagramPacket datagramPacket = null;
     private static byte[] incomingData = new byte[2048];
 
     public static void main(String[] args) {
@@ -30,7 +33,7 @@ public class HW1_Server_UDP {
         System.out.println("The ip is " + hostAddress.getHostAddress());
 
         try {
-            socket = new DatagramSocket(port);
+            datagramSocket = new DatagramSocket(port);
         } catch (Exception e) {
             System.out.println("Error listening on " + port);
         }
@@ -38,15 +41,16 @@ public class HW1_Server_UDP {
         while (true) {
             try {
                 System.out.println("Listening for clients.");
-                DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
-                socket.receive(incomingPacket);
-                byte[] data = incomingPacket.getData();
-                ByteArrayInputStream in = new ByteArrayInputStream(data);
-                ObjectInputStream is = new ObjectInputStream(in);
-                lookupAddress = (InetAddress) is.readObject();
-                System.out.println(lookupAddress.getHostAddress());
+                datagramPacket = new DatagramPacket(incomingData, incomingData.length);
+                datagramSocket.receive(datagramPacket);
+                incomingData = datagramPacket.getData();
+                byteInput = new ByteArrayInputStream(incomingData);
+                inputFromServer = new ObjectInputStream(byteInput);
+                lookupAddress.getByName((String) inputFromServer.readObject());
+
+
             } catch (Exception e) {
-                e.printStackTrace();
+
             }
 
 
