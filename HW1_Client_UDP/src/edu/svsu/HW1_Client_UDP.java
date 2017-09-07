@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 
-public class HW1_Client extends Application {
+public class HW1_Client_UDP extends Application {
 
     private GridPane grid;
     private Label lReturnedIpAddress;
@@ -32,7 +32,7 @@ public class HW1_Client extends Application {
     /**
      * Default constructor.
      */
-    public HW1_Client() {
+    public HW1_Client_UDP() {
         grid = new GridPane();
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
