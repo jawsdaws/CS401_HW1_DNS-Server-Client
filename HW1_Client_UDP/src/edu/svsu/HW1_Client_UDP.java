@@ -1,3 +1,5 @@
+package edu.svsu;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -9,9 +11,13 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 
 
@@ -19,15 +25,18 @@ public class HW1_Client_UDP extends Application {
 
     private GridPane grid;
     private Label lReturnedIpAddress;
-    private Label lConnectedStatus;
     private Button btnLookup;
-    private Button btnConnect;
     private Scene scene;
     private TextField tfHostnameToLookUp;
-    private Socket socket;
+    private DatagramSocket socket;
+    private DatagramPacket sendPacket;
+    private ByteArrayOutputStream outputStream;
     private ObjectInputStream inputFromServer;
     private ObjectOutputStream outputToServer;
     private String addressString;
+    private InetAddress serverAddress;
+    private String server = "localhost";
+    private int port = 8019;
 
     /**
      * Default constructor.
@@ -37,9 +46,7 @@ public class HW1_Client_UDP extends Application {
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
         lReturnedIpAddress = new Label();
-        lConnectedStatus = new Label("Not Connected");
         btnLookup = new Button("Lookup");
-        btnConnect = new Button("Connect");
     }
 
     @Override
@@ -55,9 +62,7 @@ public class HW1_Client_UDP extends Application {
         grid.setVgap(10);
         grid.add(tfHostnameToLookUp,1,1,1,1);
         grid.add(btnLookup, 2,1,1,1);
-        grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
-        grid.add(lConnectedStatus,1,3,1,1);
 
 
         primaryStage.setTitle("DNS Client");
@@ -65,31 +70,22 @@ public class HW1_Client_UDP extends Application {
         primaryStage.show();
 
 
-        try{
-            socket = new Socket("localhost", 8019);
-            inputFromServer = new ObjectInputStream(socket.getInputStream());
-            outputToServer = new ObjectOutputStream(socket.getOutputStream());
-            lConnectedStatus.setText("Connected");
-        } catch (Exception e) {}
-
-
-        btnConnect.setOnAction((ActionEvent event) -> {
-            if(socket == null) {
-                try {
-                    socket = new Socket("localhost", 8019);
-                    inputFromServer = new ObjectInputStream(socket.getInputStream());
-                    outputToServer = new ObjectOutputStream(socket.getOutputStream());
-                    lConnectedStatus.setText("Connected");
-                } catch (Exception e) {}
-            }
-        });
-
-
         btnLookup.setOnAction((ActionEvent event) -> {
-            try {
+            try{
                 addressString = tfHostnameToLookUp.getText();
+
+                socket = new DatagramSocket();
+                serverAddress = InetAddress.getByName(server);
+                outputStream = new ByteArrayOutputStream();
+                outputToServer = new ObjectOutputStream(outputStream);
                 outputToServer.writeObject(addressString);
-                lReturnedIpAddress.setText(inputFromServer.readObject().toString());
+                System.out.println("FUCK!!!");
+                byte[] data = outputStream.toByteArray();
+                sendPacket = new DatagramPacket(data, data.length, serverAddress, port);
+                socket.send(sendPacket);
+                //addressString = tfHostnameToLookUp.getText();
+                //outputToServer.writeObject(addressString);
+                //lReturnedIpAddress.setText(inputFromServer.readObject().toString());
 
             } catch (Exception e) {
                 lReturnedIpAddress.setText("Unable to connect to the DNS server.");
@@ -97,7 +93,6 @@ public class HW1_Client_UDP extends Application {
                     socket.close();
                     socket = null;
                 } catch (Exception e1) {}
-                lConnectedStatus.setText("Not Connected");
             }
         });
     }

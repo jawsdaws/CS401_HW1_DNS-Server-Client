@@ -1,21 +1,19 @@
 package edu.svsu;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class HW1_Server_UDP {
 
     private static int counter = 0;
     private static InetAddress hostAddress = null;
     private static InetAddress lookupAddress = null;
+    private static DatagramSocket socket = null;
+    private static byte[] incomingData = new byte[2048];
 
     public static void main(String[] args) {
 
 
-        ServerSocket serverSocket = null;
         int port = 8019;
         String hostname = "localhost";
         processFile(0);
@@ -32,22 +30,26 @@ public class HW1_Server_UDP {
         System.out.println("The ip is " + hostAddress.getHostAddress());
 
         try {
-            serverSocket = new ServerSocket(port);
-        } catch (IOException e) {
+            socket = new DatagramSocket(port);
+        } catch (Exception e) {
             System.out.println("Error listening on " + port);
         }
 
         while (true) {
-            System.out.println("Listening for clients.");
             try {
-                Socket socket = serverSocket.accept();
-                processFile(1);
-                ConnectionHandle connectionhandle = new ConnectionHandle(socket);
-                Thread thread = new Thread(connectionhandle);
-                thread.start();
-            } catch (Exception E) {
-                E.printStackTrace();
+                System.out.println("Listening for clients.");
+                DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
+                socket.receive(incomingPacket);
+                byte[] data = incomingPacket.getData();
+                ByteArrayInputStream in = new ByteArrayInputStream(data);
+                ObjectInputStream is = new ObjectInputStream(in);
+                lookupAddress = (InetAddress) is.readObject();
+                System.out.println(lookupAddress.getHostAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+
         }
     }
 
