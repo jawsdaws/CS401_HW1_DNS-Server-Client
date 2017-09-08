@@ -31,6 +31,7 @@ public class HW1_Client_TCP extends Application {
     private GridPane grid;
     private Label lReturnedIpAddress;
     private Label lConnectedStatus;
+    private Label lReturnedCount;
     private Button btnLookup;
     private Button btnConnect;
     private Scene scene;
@@ -39,16 +40,19 @@ public class HW1_Client_TCP extends Application {
     private ObjectInputStream inputFromServer;
     private ObjectOutputStream outputToServer;
     private String addressString;
+    private String totalClientConnected;
 
     /**
      * Default constructor.
      */
     public HW1_Client_TCP() {
+        totalClientConnected = "Total clients connected: ";
         grid = new GridPane();
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
         lReturnedIpAddress = new Label();
         lConnectedStatus = new Label("Not Connected");
+        lReturnedCount = new Label(totalClientConnected);
         btnLookup = new Button("Lookup");
         btnConnect = new Button("Connect");
     }
@@ -69,6 +73,7 @@ public class HW1_Client_TCP extends Application {
         grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
         grid.add(lConnectedStatus,1,3,1,1);
+        grid.add(lReturnedCount, 1 ,4,1,1);
         primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -99,8 +104,13 @@ public class HW1_Client_TCP extends Application {
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
                 addressString = tfHostnameToLookUp.getText();
-                outputToServer.writeObject(addressString);
-                lReturnedIpAddress.setText(inputFromServer.readObject().toString());
+                IPData outData = new IPData(addressString);
+                outputToServer.writeObject(outData);
+                IPData inData = new IPData();
+                inData = (IPData) inputFromServer.readObject();
+                lReturnedIpAddress.setText(inData.getStringData());
+                lReturnedCount.setText(totalClientConnected + String.valueOf(inData.getCount()));
+
 
             } catch (Exception e) {
                 lReturnedIpAddress.setText("Unable to connect to the DNS server.");

@@ -86,11 +86,13 @@ public class HW1_Server_TCP {
 
 
                 while (true) {
-                    Object input =  inputFromClient.readObject();
-                    System.out.println(input.toString());
+                    IPData input = (IPData) inputFromClient.readObject();
+
+                    System.out.println(input.getStringData());
                     try {
-                        lookupAddress = InetAddress.getByName(input.toString());
-                        outputToClient.writeObject(lookupAddress.getHostAddress());
+                        lookupAddress = InetAddress.getByName(input.getStringData());
+                        IPData outData = new IPData(lookupAddress.getHostAddress(), processFile(0));
+                        outputToClient.writeObject(outData);
                     } catch (UnknownHostException e) {
                         System.out.println("Unable to lookup ip address.");
                         outputToClient.writeObject("Unable to lookup ip address.");
@@ -112,7 +114,7 @@ public class HW1_Server_TCP {
      * @param count The amount to add to the count read from the file.
      *            Use -1 will decrement.
      */
-    private static void processFile(int count) {
+    private static int processFile(int count) {
 
         File file = new File("countfile.txt");
 
@@ -126,10 +128,11 @@ public class HW1_Server_TCP {
                 bw = new BufferedWriter(fw);
                 bw.write("0");
                 bw.close();
+                return 0;
             } catch (IOException e) {
 
             }
-        //If there is anything other than zero add it to the total.(negatives decrement)
+        //If there is anything else add it to the total.(negatives decrement)
         } else {
             try {
                 BufferedReader br;
@@ -142,11 +145,12 @@ public class HW1_Server_TCP {
                 bw = new BufferedWriter(fw);
                 bw.write(Integer.toString(Integer.parseInt(line) + count));
                 bw.close();
+                return Integer.parseInt(line);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        } return 0;
     }
 }
