@@ -1,3 +1,15 @@
+// Homework 1: DNS Server UDP
+// Student Name: James Daws
+// Course: CS401, Fall 2017
+// Instructor: Dr. Poonam Dharam
+// Date finished: 09/08/2017
+// Program description: This program is the DNS server side that uses UDP.
+//
+// Programmer Notes: UDP is unreliable!!!!  Sometimes the output is corrent, other
+//                   times it is not.  UDP also is connectionless, so threads are not needed.
+//                   Most of the processing is done in the main while loop, and the processFile
+//                   function handles the file work.
+
 package edu.svsu;
 
 import java.io.*;
@@ -10,7 +22,6 @@ public class HW1_Server_UDP {
     private static InetAddress returnAddress = null;
     private static InetAddress lookupAddress = null;
     private static ByteArrayOutputStream outByteStream;
-    private static ByteArrayInputStream inByteStream;
     private static ObjectInputStream inputFromClient = null;
     private static ObjectOutputStream outputToClient = null;
     private static ByteArrayInputStream byteInput = null;
@@ -23,13 +34,15 @@ public class HW1_Server_UDP {
     private static String returnIP;
 
 
+    /*
+        Main.  Not much else to say.
+    */
     public static void main(String[] args) {
 
-
+        //Setup block.  Mostly used for debugging.
         int port = 8019;
         String hostname = "localhost";
         processFile(0);
-
         System.out.println("Welcome to the DNS server.");
         System.out.println("The hostname is " + hostname);
 
@@ -48,6 +61,9 @@ public class HW1_Server_UDP {
             System.out.println("Error listening on " + port);
         }
 
+        //The primary while loop.  Listen. Rx a packet. Process it,
+        // and send it back.  Last, count a connection.
+
         while (true) {
             try {
                 System.out.println("Listening for clients.");
@@ -59,7 +75,6 @@ public class HW1_Server_UDP {
                 byteInput = new ByteArrayInputStream(rxData);
                 inputFromClient = new ObjectInputStream(byteInput);
 
-
                 try {
                     lookupAddress = InetAddress.getByName((String) inputFromClient.readObject());
                     returnIP = lookupAddress.getHostAddress();
@@ -67,8 +82,6 @@ public class HW1_Server_UDP {
                     ue.printStackTrace();
                     returnIP = "Unknown host";
                 }
-
-
 
                 outByteStream = new ByteArrayOutputStream(returnIP.getBytes().length);
                 outputToClient = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
@@ -78,49 +91,12 @@ public class HW1_Server_UDP {
                 sendData = outByteStream.toByteArray();
                 sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
                 datagramSocket.send(sendPacket);
+                processFile(1);
 
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("FUCK!!");
             }
-        }
-    }
-
-    private static class ConnectionHandle implements Runnable {
-
-        private Socket socket;
-
-        private ConnectionHandle(Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            try {
-                ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
-
-
-                while (true) {
-                    Object input =  inputFromClient.readObject();
-                    System.out.println(input.toString());
-                    try {
-                        lookupAddress = InetAddress.getByName(input.toString());
-                        outputToClient.writeObject(lookupAddress.getHostAddress());
-                    } catch (UnknownHostException e) {
-                        System.out.println("Unable to lookup ip address.");
-                        outputToClient.writeObject("Unable to lookup ip address.");
-                    }
-                }
-            } catch (EOFException e) {
-                System.out.println("Client disconnected");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 
@@ -133,7 +109,7 @@ public class HW1_Server_UDP {
 
         File file = new File("countfile.txt");
 
-        //0 should only be passed in count if there is no file.
+        //Create a new file if one does not exist.
         if (count == 0 && !file.exists()) {
             try {
                 file.createNewFile();
