@@ -59,6 +59,7 @@ public class HW1_Client_TCP extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         //Gui Setup
         tfHostnameToLookUp.setMinSize(300, 10);
         tfHostnameToLookUp.setFont(Font.font("Courier New", 16));
@@ -86,7 +87,6 @@ public class HW1_Client_TCP extends Application {
             lConnectedStatus.setText("Connected");
         } catch (Exception e) {}
 
-
         //Reconnect if the connection is lost.
         btnConnect.setOnAction((ActionEvent event) -> {
             if(socket == null) {
@@ -99,19 +99,15 @@ public class HW1_Client_TCP extends Application {
             }
         });
 
-
         //send the ip lookup request to the server
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
                 addressString = tfHostnameToLookUp.getText();
                 IPData outData = new IPData(addressString);
                 outputToServer.writeObject(outData);
-                IPData inData = new IPData();
-                inData = (IPData) inputFromServer.readObject();
+                IPData inData = (IPData) inputFromServer.readObject();
                 lReturnedIpAddress.setText(inData.getStringData());
                 lReturnedCount.setText(totalClientConnected + String.valueOf(inData.getCount()));
-
-
             } catch (Exception e) {
                 lReturnedIpAddress.setText("Unable to connect to the DNS server.");
                 try {
@@ -121,5 +117,11 @@ public class HW1_Client_TCP extends Application {
                 lConnectedStatus.setText("Not Connected");
             }
         });
+
+        //fire the button in case "Enter" is press on the testField.
+        tfHostnameToLookUp.setOnAction((ActionEvent event) -> {
+            btnLookup.fire();
+        });
+
     }
 }

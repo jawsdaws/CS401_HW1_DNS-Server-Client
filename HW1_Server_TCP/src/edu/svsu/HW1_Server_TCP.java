@@ -68,7 +68,7 @@ public class HW1_Server_TCP {
     }
 
     /**
-     * The thread portion of the TCP connection so that this serve can have multiple clients.
+     * The thread portion of the TCP connection so that this server can have multiple clients.
      */
     private static class ConnectionHandle implements Runnable {
 
@@ -87,7 +87,6 @@ public class HW1_Server_TCP {
 
                 while (true) {
                     IPData input = (IPData) inputFromClient.readObject();
-
                     System.out.println(input.getStringData());
                     try {
                         lookupAddress = InetAddress.getByName(input.getStringData());
@@ -95,7 +94,8 @@ public class HW1_Server_TCP {
                         outputToClient.writeObject(outData);
                     } catch (UnknownHostException e) {
                         System.out.println("Unable to lookup ip address.");
-                        outputToClient.writeObject("Unable to lookup ip address.");
+                        IPData outData = new IPData("Unable to lookup ip address.", processFile(0));
+                        outputToClient.writeObject(outData);
                     }
                 }
             } catch (EOFException e) {
@@ -111,8 +111,9 @@ public class HW1_Server_TCP {
 
     /**
      * This function reads the count file and updates the count based on the int param.
-     * @param count The amount to add to the count read from the file.
+     * @param count The amount to add to the count read from the file. 0 is a sentinel.
      *            Use -1 will decrement.
+     * @return int the number read from the file or a 0 sentinel.
      */
     private static int processFile(int count) {
 
@@ -151,6 +152,6 @@ public class HW1_Server_TCP {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } return 0;
+        }return 0; //We should never be here...
     }
 }
