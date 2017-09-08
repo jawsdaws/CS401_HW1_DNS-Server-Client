@@ -35,7 +35,6 @@ public class HW1_Client_UDP extends Application {
     private Label lConnectedStatus;
     private Label lReturnedCount;
     private Button btnLookup;
-    private Button btnConnect;
     private Scene scene;
     private TextField tfHostnameToLookUp;
 
@@ -66,7 +65,6 @@ public class HW1_Client_UDP extends Application {
         totalClientConnected = "Total clients connected: ";
         lReturnedCount = new Label(totalClientConnected);
         btnLookup = new Button("Lookup");
-        btnConnect = new Button("Connect");
     }
 
     /**
@@ -88,36 +86,18 @@ public class HW1_Client_UDP extends Application {
         grid.setVgap(10);
         grid.add(tfHostnameToLookUp,1,1,1,1);
         grid.add(btnLookup, 2,1,1,1);
-        grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
-        grid.add(lConnectedStatus,1,3,1,1);
         grid.add(lReturnedCount,1,4,1,1);
         primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        //Initial priming socket.
-        try {
-            server = InetAddress.getByName("localhost");
-            socket = new DatagramSocket();
-            System.out.println(socket.isConnected());
-            lConnectedStatus.setText("Connected");
-        } catch (Exception e) {}
-
-
-        //Connected button is only need if the client was started before the server.
-        btnConnect.setOnAction((ActionEvent event) -> {
-            if(socket == null) {
-                try {
-                    socket = new DatagramSocket();
-                    lConnectedStatus.setText("Connected");
-                } catch (Exception e) {}
-            }
-        });
+        server = InetAddress.getByName("localhost");
 
         //Send, rx, display
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
+                socket = new DatagramSocket();
                 addressString = tfHostnameToLookUp.getText();
                 outByteStream = new ByteArrayOutputStream(4096);
                 outputToServer = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
@@ -150,7 +130,7 @@ public class HW1_Client_UDP extends Application {
             }
         });
 
-        //fire the button in case "Enter" is press on the testField.
+        //fire the button in case "Enter" is press on the textField.
         tfHostnameToLookUp.setOnAction((ActionEvent event) -> {
             btnLookup.fire();
         });
