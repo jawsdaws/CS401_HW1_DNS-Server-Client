@@ -14,9 +14,10 @@
       <file leaf-file-name="HW1_Client_UDP.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_UDP.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="511">
-              <caret line="109" column="16" lean-forward="false" selection-start-line="109" selection-start-column="16" selection-end-line="109" selection-end-column="16" />
+            <state relative-caret-position="4896">
+              <caret line="144" column="0" lean-forward="true" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
               <folding>
+                <element signature="e#0#5078#0" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
@@ -252,14 +253,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_UDP.java</url>
-          <line>110</line>
-          <properties />
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="24" />
     </breakpoint-manager>
     <watches-manager />
@@ -270,6 +263,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#0#5078#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -280,6 +274,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#0#5078#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -290,6 +285,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#0#5078#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -300,6 +296,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
+            <element signature="e#0#5078#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -307,9 +304,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_UDP.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="511">
-          <caret line="109" column="16" lean-forward="false" selection-start-line="109" selection-start-column="16" selection-end-line="109" selection-end-column="16" />
+        <state relative-caret-position="4896">
+          <caret line="144" column="0" lean-forward="true" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
           <folding>
+            <element signature="e#0#5078#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>

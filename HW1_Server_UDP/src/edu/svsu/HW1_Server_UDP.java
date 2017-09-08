@@ -5,8 +5,9 @@
 // Date finished: 09/08/2017
 // Program description: This program is the DNS server side that uses UDP.
 //
-// Programmer Notes: UDP is unreliable!!!!  Sometimes the output is corrent, other
-//                   times it is not.  UDP also is connectionless, so threads are not needed.
+// Programmer Notes: UDP is a poor protocal for this application. UDP is unreliable!!!!
+//                   Sometimes the output is correct, other times it is not.  UDP also
+//                   is connectionless, so threads are not needed.
 //                   Most of the processing is done in the main while loop, and the processFile
 //                   function handles the file work.
 
