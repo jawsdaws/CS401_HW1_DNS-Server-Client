@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="HW1_Client_TCP:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="42821590-4b8c-47fe-b500-3f7d55993ed8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/edu/edu.iml" afterPath="$PROJECT_DIR$/HW1_Client_TCP.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/edu/svsu/HW1_Client.java" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/src/edu/svsu/HW1_Client_UDP.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../HW1_Client_UDP/src/edu/svsu/HW1_Client.java" afterPath="$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/src/META-INF/MANIFEST.MF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Server_TCP/.idea/artifacts/HW1_Server_TCP_jar.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../HW1_Server_TCP/src/META-INF/MANIFEST.MF" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java" afterPath="$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_TCP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Server_TCP/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_TCP/src/edu/svsu/HW1_Server_TCP.java" afterPath="$PROJECT_DIR$/../HW1_Server_TCP/src/edu/svsu/HW1_Server_TCP.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_UDP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Server_UDP/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_UDP/src/edu/svsu/HW1_Server_UDP.java" afterPath="$PROJECT_DIR$/../HW1_Server_UDP/src/edu/svsu/HW1_Server_UDP.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,9 +31,10 @@
       <file leaf-file-name="HW1_Client_TCP.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+            <state relative-caret-position="2583">
+              <caret line="97" column="50" lean-forward="false" selection-start-line="97" selection-start-column="50" selection-end-line="97" selection-end-column="50" />
               <folding>
+                <element signature="e#0#4105#0" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
@@ -61,9 +69,9 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="130" />
-    <option name="y" value="48" />
-    <option name="width" value="3710" />
-    <option name="height" value="2112" />
+    <option name="y" value="104" />
+    <option name="width" value="1855" />
+    <option name="height" value="2056" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -80,9 +88,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -109,8 +117,8 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../HW1_Client_UDP" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
@@ -255,7 +263,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="130" y="48" width="3710" height="2112" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -298,6 +305,28 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#4105#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#4105#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client.java" />
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client.java" />
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client.java" />
@@ -326,9 +355,10 @@
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP" />
     <entry file="file://$PROJECT_DIR$/src/edu/svsu/HW1_Client_TCP.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+        <state relative-caret-position="2583">
+          <caret line="97" column="50" lean-forward="false" selection-start-line="97" selection-start-column="50" selection-end-line="97" selection-end-column="50" />
           <folding>
+            <element signature="e#0#4105#0" expanded="true" />
             <element signature="imports" expanded="true" />
           </folding>
         </state>
@@ -340,10 +370,12 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>HW1_Client_TCP:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
@@ -391,6 +423,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

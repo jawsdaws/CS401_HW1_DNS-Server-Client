@@ -1,3 +1,13 @@
+// Homework 1: DNS Client TCP
+// Student Name: James Daws
+// Course: CS401, Fall 2017
+// Instructor: Dr. Poonam Dharam
+// Date finished: 09/08/2017
+// Program description: This program is the DNS client side that uses TCP.
+//
+// Programmer Notes: TCP is the proper protocol for this application. UDP is unreliable!!!!
+//                   The output should be reliable.  The connect button
+//                   is only needed if the server was not started before the client.
 package edu.svsu;
 
 import javafx.application.Application;
@@ -11,7 +21,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -46,12 +55,12 @@ public class HW1_Client_TCP extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //Gui Setup
         tfHostnameToLookUp.setMinSize(300, 10);
         tfHostnameToLookUp.setFont(Font.font("Courier New", 16));
         tfHostnameToLookUp.setPadding(new Insets(10, 10, 10, 10));
         tfHostnameToLookUp.setEditable(true);
         tfHostnameToLookUp.setText("Enter hostname to lookup here." + "\n");
-
         grid.setStyle("-fx-border-color: black");
         grid.setHgap(10);
         grid.setVgap(10);
@@ -60,13 +69,11 @@ public class HW1_Client_TCP extends Application {
         grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
         grid.add(lConnectedStatus,1,3,1,1);
-
-
         primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-
+        //prime the socket
         try{
             socket = new Socket("localhost", 8019);
             inputFromServer = new ObjectInputStream(socket.getInputStream());
@@ -75,6 +82,7 @@ public class HW1_Client_TCP extends Application {
         } catch (Exception e) {}
 
 
+        //Reconnect if the connection is lost.
         btnConnect.setOnAction((ActionEvent event) -> {
             if(socket == null) {
                 try {
@@ -87,6 +95,7 @@ public class HW1_Client_TCP extends Application {
         });
 
 
+        //send the ip lookup request to the server
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
                 addressString = tfHostnameToLookUp.getText();

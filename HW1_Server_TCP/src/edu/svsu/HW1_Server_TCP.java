@@ -1,3 +1,15 @@
+// Homework 1: DNS Server TCP
+// Student Name: James Daws
+// Course: CS401, Fall 2017
+// Instructor: Dr. Poonam Dharam
+// Date finished: 09/08/2017
+// Program description: This program is the DNS server side that uses TCP.
+//
+// Programmer Notes: TCP is the protocol of choice for this application. TCP is reliable.
+//                   Sometimes the output is correct, other times it is not.  UDP also
+//                   is connectionless, so threads are not needed.
+//                   A while loop starts a new thread for each client that connects.
+//                   The processFile function handles the file work.
 package edu.svsu;
 
 import java.io.*;
@@ -6,12 +18,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+
 public class HW1_Server_TCP {
 
-    private static int counter = 0;
     private static InetAddress hostAddress = null;
     private static InetAddress lookupAddress = null;
 
+    /**
+     * Main
+     * @param args not used
+     */
     public static void main(String[] args) {
 
 
@@ -51,6 +67,9 @@ public class HW1_Server_TCP {
         }
     }
 
+    /**
+     * The thread portion of the TCP connection so that this serve can have multiple clients.
+     */
     private static class ConnectionHandle implements Runnable {
 
         private Socket socket;
@@ -97,7 +116,7 @@ public class HW1_Server_TCP {
 
         File file = new File("countfile.txt");
 
-        //0 should only be passed in count if there is no file.
+        //Check if the file exists, and create new if not.
         if (count == 0 && !file.exists()) {
             try {
                 file.createNewFile();
