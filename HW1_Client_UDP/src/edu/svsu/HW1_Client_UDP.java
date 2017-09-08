@@ -11,10 +11,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -25,18 +22,24 @@ public class HW1_Client_UDP extends Application {
 
     private GridPane grid;
     private Label lReturnedIpAddress;
+    private Label lConnectedStatus;
     private Button btnLookup;
+    private Button btnConnect;
     private Scene scene;
     private TextField tfHostnameToLookUp;
+
+    private InetAddress server;
     private DatagramSocket socket;
+    private DatagramPacket rxPacket;
     private DatagramPacket sendPacket;
-    private ByteArrayOutputStream outputStream;
+    private ByteArrayOutputStream outByteStream;
+    private ByteArrayInputStream inByteStream;
     private ObjectInputStream inputFromServer;
     private ObjectOutputStream outputToServer;
     private String addressString;
-    private InetAddress serverAddress;
-    private String server = "localhost";
     private int port = 8019;
+    private byte[] rxData = new byte[2048];
+    private byte[] sendData = new byte[2048];
 
     /**
      * Default constructor.
@@ -46,7 +49,9 @@ public class HW1_Client_UDP extends Application {
         scene = new Scene(grid, 500, 200);
         tfHostnameToLookUp = new TextField();
         lReturnedIpAddress = new Label();
+        lConnectedStatus = new Label("Not Connected");
         btnLookup = new Button("Lookup");
+        btnConnect = new Button("Connect");
     }
 
     @Override
@@ -62,7 +67,9 @@ public class HW1_Client_UDP extends Application {
         grid.setVgap(10);
         grid.add(tfHostnameToLookUp,1,1,1,1);
         grid.add(btnLookup, 2,1,1,1);
+        grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
+        grid.add(lConnectedStatus,1,3,1,1);
 
 
         primaryStage.setTitle("DNS Client");
@@ -70,21 +77,42 @@ public class HW1_Client_UDP extends Application {
         primaryStage.show();
 
 
-        btnLookup.setOnAction((ActionEvent event) -> {
-            try{
-                addressString = tfHostnameToLookUp.getText();
+        try{
+            server = InetAddress.getByName("localhost");
+            socket = new DatagramSocket();
+            lConnectedStatus.setText("Connected");
+        } catch (Exception e) {}
 
-                socket = new DatagramSocket();
-                serverAddress = InetAddress.getByName(server);
-                outputStream = new ByteArrayOutputStream();
-                outputToServer = new ObjectOutputStream(outputStream);
+
+        btnConnect.setOnAction((ActionEvent event) -> {
+            if(socket == null) {
+                try {
+                    socket = new DatagramSocket();
+                    lConnectedStatus.setText("Connected");
+                } catch (Exception e) {}
+            }
+        });
+
+
+        btnLookup.setOnAction((ActionEvent event) -> {
+            try {
+                addressString = tfHostnameToLookUp.getText();
+                outByteStream = new ByteArrayOutputStream(2048);
+                outputToServer = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
+                outputToServer.flush();
                 outputToServer.writeObject(addressString);
-                byte[] data = outputStream.toByteArray();
-                sendPacket = new DatagramPacket(data, data.length, serverAddress, port);
+                outputToServer.flush();
+                sendData = outByteStream.toByteArray();
+                sendPacket = new DatagramPacket(sendData, sendData.length, server, port);
                 socket.send(sendPacket);
-                //addressString = tfHostnameToLookUp.getText();
-                //outputToServer.writeObject(addressString);
-                //lReturnedIpAddress.setText(inputFromServer.readObject().toString());
+
+                rxPacket = new DatagramPacket(rxData, sendData.length);
+                socket.receive(rxPacket);
+                rxData = rxPacket.getData();
+                inByteStream = new ByteArrayInputStream(rxData);
+                inputFromServer = new ObjectInputStream(inByteStream);
+                lReturnedIpAddress.setText((String)inputFromServer.readObject());
+
 
             } catch (Exception e) {
                 lReturnedIpAddress.setText("Unable to connect to the DNS server.");
@@ -92,6 +120,7 @@ public class HW1_Client_UDP extends Application {
                     socket.close();
                     socket = null;
                 } catch (Exception e1) {}
+                lConnectedStatus.setText("Not Connected");
             }
         });
     }

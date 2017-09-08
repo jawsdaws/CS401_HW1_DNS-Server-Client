@@ -7,12 +7,19 @@ public class HW1_Server_UDP {
 
     private static int counter = 0;
     private static InetAddress hostAddress = null;
+    private static InetAddress returnAddress = null;
     private static InetAddress lookupAddress = null;
-    private static ObjectInputStream inputFromServer = null;
+    private static ByteArrayOutputStream outByteStream;
+    private static ByteArrayInputStream inByteStream;
+    private static ObjectInputStream inputFromClient = null;
+    private static ObjectOutputStream outputToClient = null;
     private static ByteArrayInputStream byteInput = null;
     private static DatagramSocket datagramSocket = null;
-    private static DatagramPacket datagramPacket = null;
-    private static byte[] incomingData = new byte[2048];
+    private static DatagramPacket rxPacket = null;
+    private static DatagramPacket sendPacket = null;
+    private static byte[] rxData = new byte[2048];
+    private static byte[] sendData = new byte[2048];
+    private static int returnPort;
 
     public static void main(String[] args) {
 
@@ -35,25 +42,40 @@ public class HW1_Server_UDP {
         try {
             datagramSocket = new DatagramSocket(port);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error listening on " + port);
         }
 
         while (true) {
             try {
                 System.out.println("Listening for clients.");
-                datagramPacket = new DatagramPacket(incomingData, incomingData.length);
-                datagramSocket.receive(datagramPacket);
-                incomingData = datagramPacket.getData();
-                byteInput = new ByteArrayInputStream(incomingData);
-                inputFromServer = new ObjectInputStream(byteInput);
-                lookupAddress.getByName((String) inputFromServer.readObject());
+                rxPacket = new DatagramPacket(rxData, sendData.length);
+                datagramSocket.receive(rxPacket);
+                rxData = rxPacket.getData();
+                returnAddress = rxPacket.getAddress();
+                returnPort = rxPacket.getPort();
+                byteInput = new ByteArrayInputStream(rxData);
+                inputFromClient = new ObjectInputStream(byteInput);
+
+
+                lookupAddress = InetAddress.getByName((String) inputFromClient.readObject());
+                System.out.println(lookupAddress.getHostAddress());
+
+                outByteStream = new ByteArrayOutputStream(2048);
+                outputToClient = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
+                outputToClient.flush();
+                outputToClient.writeObject(lookupAddress.getHostAddress());
+                outputToClient.flush();
+                sendData = outByteStream.toByteArray();
+                sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
+                datagramSocket.send(sendPacket);
+
 
 
             } catch (Exception e) {
-
+                e.printStackTrace();
+                System.out.println("FUCK!!");
             }
-
-
         }
     }
 
