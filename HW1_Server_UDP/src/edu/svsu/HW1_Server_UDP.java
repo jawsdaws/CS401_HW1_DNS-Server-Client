@@ -18,22 +18,8 @@ import java.net.*;
 
 public class HW1_Server_UDP {
 
-    private static int counter = 0;
     private static InetAddress hostAddress = null;
-    private static InetAddress returnAddress = null;
-    private static InetAddress lookupAddress = null;
-    private static ByteArrayOutputStream outByteStream;
-    private static ObjectInputStream inputFromClient = null;
-    private static ObjectOutputStream outputToClient = null;
-    private static ByteArrayInputStream byteInput = null;
     private static DatagramSocket datagramSocket = null;
-    private static DatagramPacket rxPacket = null;
-    private static DatagramPacket sendPacket = null;
-    private static byte[] rxData = new byte[4096];
-    private static byte[] sendData = new byte[4096];
-    private static int returnPort;
-    private static String returnIP;
-
 
     /*
         Main.  Not much else to say.
@@ -58,7 +44,6 @@ public class HW1_Server_UDP {
         try {
             datagramSocket = new DatagramSocket(port);
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Error listening on " + port);
         }
 
@@ -66,38 +51,100 @@ public class HW1_Server_UDP {
         // and send it back.  Last, count a connection.
 
         while (true) {
+            System.out.println("Listening for clients.");
             try {
-                System.out.println("Listening for clients.");
-                rxPacket = new DatagramPacket(rxData, sendData.length);
+                byte[] rxData = new byte[4096];
+                DatagramPacket rxPacket = new DatagramPacket(rxData, rxData.length);
                 datagramSocket.receive(rxPacket);
+                processFile(1);
+                ConnectionHandle connectionhandle = new ConnectionHandle(rxPacket, rxData);
+                Thread thread = new Thread(connectionhandle);
+                thread.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("FUCK!!!");
+            }
+        }
+    }
+
+    /**
+     * The thread portion of the UDP connection so that this server can have multiple clients.
+     */
+    private static class ConnectionHandle implements Runnable {
+
+        private DatagramPacket rxPacket;
+        private byte[] rxData;
+
+        private ConnectionHandle(DatagramPacket rxPacket, byte[] rxData) {
+            this.rxData = rxData;
+            this.rxPacket = rxPacket;
+        }
+
+        @Override
+        public void run() {
+
+            byte[] sendData = new byte[4096];
+            String returnIP;
+
+            try {
+
                 rxData = rxPacket.getData();
-                returnAddress = rxPacket.getAddress();
-                returnPort = rxPacket.getPort();
-                byteInput = new ByteArrayInputStream(rxData);
-                inputFromClient = new ObjectInputStream(byteInput);
+                InetAddress returnAddress = rxPacket.getAddress();
+                int returnPort = rxPacket.getPort();
+                ByteArrayInputStream byteInput = new ByteArrayInputStream(rxData);
+                ObjectInputStream inputFromClient = new ObjectInputStream(byteInput);
+                IPData inData = (IPData) inputFromClient.readObject();
 
                 try {
-                    lookupAddress = InetAddress.getByName((String) inputFromClient.readObject());
+                    InetAddress lookupAddress = InetAddress.getByName(inData.getStringData());
                     returnIP = lookupAddress.getHostAddress();
                 } catch (UnknownHostException ue) {
                     ue.printStackTrace();
                     returnIP = "Unknown host";
                 }
 
-                outByteStream = new ByteArrayOutputStream(returnIP.getBytes().length);
-                outputToClient = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
+                ByteArrayOutputStream outByteStream = new ByteArrayOutputStream(returnIP.getBytes().length);
+                ObjectOutputStream outputToClient = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
+                IPData outData = new IPData(returnIP, processFile(0));
                 outputToClient.flush();
-                outputToClient.writeObject(returnIP);
+                outputToClient.writeObject(outData);
                 outputToClient.flush();
                 sendData = outByteStream.toByteArray();
-                sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
                 datagramSocket.send(sendPacket);
-                processFile(1);
 
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (ClassNotFoundException e1) {
+                e1.printStackTrace();
             }
+
+            /*try {
+                ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
+
+
+                while (true) {
+                    IPData input = (IPData) inputFromClient.readObject();
+                    System.out.println(input.getStringData());
+                    try {
+                        lookupAddress = InetAddress.getByName(input.getStringData());
+                        IPData outData = new IPData(lookupAddress.getHostAddress(), processFile(0));
+                        outputToClient.writeObject(outData);
+                    } catch (UnknownHostException e) {
+                        System.out.println("Unable to lookup ip address.");
+                        IPData outData = new IPData("Unable to lookup ip address.", processFile(0));
+                        outputToClient.writeObject(outData);
+                    }
+                }
+            } catch (EOFException e) {
+                System.out.println("Client disconnected");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }*/
+
         }
     }
 
@@ -106,7 +153,7 @@ public class HW1_Server_UDP {
      * @param count The amount to add to the count read from the file.
      *            Use -1 will decrement.
      */
-    private static void processFile(int count) {
+    private static int processFile(int count) {
 
         File file = new File("countfile.txt");
 
@@ -120,6 +167,7 @@ public class HW1_Server_UDP {
                 bw = new BufferedWriter(fw);
                 bw.write("0");
                 bw.close();
+                return 0;
             } catch (IOException e) {
 
             }
@@ -136,11 +184,12 @@ public class HW1_Server_UDP {
                 bw = new BufferedWriter(fw);
                 bw.write(Integer.toString(Integer.parseInt(line) + count));
                 bw.close();
+                return Integer.parseInt(line);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        } return 0;
     }
 }

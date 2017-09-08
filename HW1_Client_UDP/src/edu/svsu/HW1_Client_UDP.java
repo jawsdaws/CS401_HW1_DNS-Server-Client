@@ -33,6 +33,7 @@ public class HW1_Client_UDP extends Application {
     private GridPane grid;
     private Label lReturnedIpAddress;
     private Label lConnectedStatus;
+    private Label lReturnedCount;
     private Button btnLookup;
     private Button btnConnect;
     private Scene scene;
@@ -47,6 +48,8 @@ public class HW1_Client_UDP extends Application {
     private ObjectInputStream inputFromServer;
     private ObjectOutputStream outputToServer;
     private String addressString;
+    private String totalClientConnected;
+
     private int port = 8019;
     private byte[] rxData = new byte[4096];
     private byte[] sendData = new byte[4096];
@@ -60,6 +63,8 @@ public class HW1_Client_UDP extends Application {
         tfHostnameToLookUp = new TextField();
         lReturnedIpAddress = new Label();
         lConnectedStatus = new Label("Not Connected");
+        totalClientConnected = "Total clients connected: ";
+        lReturnedCount = new Label(totalClientConnected);
         btnLookup = new Button("Lookup");
         btnConnect = new Button("Connect");
     }
@@ -86,6 +91,7 @@ public class HW1_Client_UDP extends Application {
         grid.add(btnConnect, 2,3,1,1);
         grid.add(lReturnedIpAddress,1,2,1,1);
         grid.add(lConnectedStatus,1,3,1,1);
+        grid.add(lReturnedCount,1,4,1,1);
         primaryStage.setTitle("DNS Client");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -98,7 +104,7 @@ public class HW1_Client_UDP extends Application {
         } catch (Exception e) {}
 
 
-        //Connected button is only neede if the client was started before the server.
+        //Connected button is only need if the client was started before the server.
         btnConnect.setOnAction((ActionEvent event) -> {
             if(socket == null) {
                 try {
@@ -108,15 +114,15 @@ public class HW1_Client_UDP extends Application {
             }
         });
 
-
         //Send, rx, display
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
                 addressString = tfHostnameToLookUp.getText();
                 outByteStream = new ByteArrayOutputStream(4096);
                 outputToServer = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
+                IPData outData = new IPData(addressString);
                 outputToServer.flush();
-                outputToServer.writeObject(addressString);
+                outputToServer.writeObject(outData);
                 outputToServer.flush();
                 sendData = outByteStream.toByteArray();
                 sendPacket = new DatagramPacket(sendData, sendData.length, server, port);
@@ -128,7 +134,9 @@ public class HW1_Client_UDP extends Application {
                 rxData = rxPacket.getData();
                 inByteStream = new ByteArrayInputStream(rxData);
                 inputFromServer = new ObjectInputStream(inByteStream);
-                lReturnedIpAddress.setText((String)inputFromServer.readObject());
+                IPData inData = (IPData) inputFromServer.readObject();
+                lReturnedIpAddress.setText(inData.getStringData());
+                lReturnedCount.setText(totalClientConnected + String.valueOf(inData.getCount()));
 
 
             } catch (Exception e) {
@@ -139,6 +147,11 @@ public class HW1_Client_UDP extends Application {
                 } catch (Exception e1) {}
                 lConnectedStatus.setText("Not Connected");
             }
+        });
+
+        //fire the button in case "Enter" is press on the testField.
+        tfHostnameToLookUp.setOnAction((ActionEvent event) -> {
+            btnLookup.fire();
         });
     }
 }
