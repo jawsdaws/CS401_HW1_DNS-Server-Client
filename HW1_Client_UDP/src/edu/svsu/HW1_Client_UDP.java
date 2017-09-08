@@ -100,6 +100,7 @@ public class HW1_Client_UDP extends Application {
         try {
             server = InetAddress.getByName("localhost");
             socket = new DatagramSocket();
+            System.out.println(socket.isConnected());
             lConnectedStatus.setText("Connected");
         } catch (Exception e) {}
 

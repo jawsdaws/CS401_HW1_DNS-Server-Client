@@ -7,14 +7,29 @@
 //
 // Programmer Notes: UDP is a poor protocol for this application. UDP is unreliable!!!!
 //                   Sometimes the output is correct, other times it is not.  UDP also
-//                   is connectionless, so threads are not needed.
-//                   Most of the processing is done in the main while loop, and the processFile
-//                   function handles the file work.
+//                   is connectionless so every query counts as a connection.
+//                   The main while loop listens fora Datagram packet, and starts a new thread
+//                   for each packet. The processFile function handles the file work.
 
 package edu.svsu;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.FileReader;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class HW1_Server_UDP {
 
@@ -83,11 +98,9 @@ public class HW1_Server_UDP {
         @Override
         public void run() {
 
-            byte[] sendData = new byte[4096];
             String returnIP;
 
             try {
-
                 rxData = rxPacket.getData();
                 InetAddress returnAddress = rxPacket.getAddress();
                 int returnPort = rxPacket.getPort();
@@ -99,7 +112,6 @@ public class HW1_Server_UDP {
                     InetAddress lookupAddress = InetAddress.getByName(inData.getStringData());
                     returnIP = lookupAddress.getHostAddress();
                 } catch (UnknownHostException ue) {
-                    ue.printStackTrace();
                     returnIP = "Unknown host";
                 }
 
@@ -109,7 +121,7 @@ public class HW1_Server_UDP {
                 outputToClient.flush();
                 outputToClient.writeObject(outData);
                 outputToClient.flush();
-                sendData = outByteStream.toByteArray();
+                byte[] sendData = outByteStream.toByteArray();
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
                 datagramSocket.send(sendPacket);
 
@@ -118,40 +130,15 @@ public class HW1_Server_UDP {
             } catch (ClassNotFoundException e1) {
                 e1.printStackTrace();
             }
-
-            /*try {
-                ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
-
-
-                while (true) {
-                    IPData input = (IPData) inputFromClient.readObject();
-                    System.out.println(input.getStringData());
-                    try {
-                        lookupAddress = InetAddress.getByName(input.getStringData());
-                        IPData outData = new IPData(lookupAddress.getHostAddress(), processFile(0));
-                        outputToClient.writeObject(outData);
-                    } catch (UnknownHostException e) {
-                        System.out.println("Unable to lookup ip address.");
-                        IPData outData = new IPData("Unable to lookup ip address.", processFile(0));
-                        outputToClient.writeObject(outData);
-                    }
-                }
-            } catch (EOFException e) {
-                System.out.println("Client disconnected");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }*/
-
         }
     }
 
     /**
      * This function reads the count file and updates the count based on the int param.
      * @param count The amount to add to the count read from the file.
-     *            Use -1 will decrement.
+     *            Use -1 to decrement.
+     *
+     * @return int the number read from the file
      */
     private static int processFile(int count) {
 
@@ -171,7 +158,8 @@ public class HW1_Server_UDP {
             } catch (IOException e) {
 
             }
-        //If there is anything other than zero add it to the total.(negatives decrement)
+        //If there is anything other than zero in the parameter
+        //add it to the total.(negatives decrement)
         } else {
             try {
                 BufferedReader br;
@@ -190,6 +178,7 @@ public class HW1_Server_UDP {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } return 0;
+        }//Return 0 if an exception is caught.
+         return 0;
     }
 }

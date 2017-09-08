@@ -7,10 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd373d89-225e-402b-9748-dbe70d7a476a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Client_TCP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Client_TCP/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Client_UDP/src/edu/svsu/HW1_Client_UDP.java" afterPath="$PROJECT_DIR$/../HW1_Client_UDP/src/edu/svsu/HW1_Client_UDP.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_UDP/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../HW1_Server_UDP/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../HW1_Server_UDP/src/edu/svsu/HW1_Server_UDP.java" afterPath="$PROJECT_DIR$/../HW1_Server_UDP/src/edu/svsu/HW1_Server_UDP.java" />
     </list>
