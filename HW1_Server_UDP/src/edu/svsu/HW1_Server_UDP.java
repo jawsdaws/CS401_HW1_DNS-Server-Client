@@ -17,9 +17,11 @@ public class HW1_Server_UDP {
     private static DatagramSocket datagramSocket = null;
     private static DatagramPacket rxPacket = null;
     private static DatagramPacket sendPacket = null;
-    private static byte[] rxData = new byte[2048];
-    private static byte[] sendData = new byte[2048];
+    private static byte[] rxData = new byte[4096];
+    private static byte[] sendData = new byte[4096];
     private static int returnPort;
+    private static String returnIP;
+
 
     public static void main(String[] args) {
 
@@ -58,18 +60,24 @@ public class HW1_Server_UDP {
                 inputFromClient = new ObjectInputStream(byteInput);
 
 
-                lookupAddress = InetAddress.getByName((String) inputFromClient.readObject());
-                System.out.println(lookupAddress.getHostAddress());
+                try {
+                    lookupAddress = InetAddress.getByName((String) inputFromClient.readObject());
+                    returnIP = lookupAddress.getHostAddress();
+                } catch (UnknownHostException ue) {
+                    ue.printStackTrace();
+                    returnIP = "Unknown host";
+                }
 
-                outByteStream = new ByteArrayOutputStream(2048);
+
+
+                outByteStream = new ByteArrayOutputStream(returnIP.getBytes().length);
                 outputToClient = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
                 outputToClient.flush();
-                outputToClient.writeObject(lookupAddress.getHostAddress());
+                outputToClient.writeObject(returnIP);
                 outputToClient.flush();
                 sendData = outByteStream.toByteArray();
                 sendPacket = new DatagramPacket(sendData, sendData.length, returnAddress, returnPort);
                 datagramSocket.send(sendPacket);
-
 
 
             } catch (Exception e) {

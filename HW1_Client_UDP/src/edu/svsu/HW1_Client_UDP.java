@@ -38,8 +38,8 @@ public class HW1_Client_UDP extends Application {
     private ObjectOutputStream outputToServer;
     private String addressString;
     private int port = 8019;
-    private byte[] rxData = new byte[2048];
-    private byte[] sendData = new byte[2048];
+    private byte[] rxData = new byte[4096];
+    private byte[] sendData = new byte[4096];
 
     /**
      * Default constructor.
@@ -97,7 +97,7 @@ public class HW1_Client_UDP extends Application {
         btnLookup.setOnAction((ActionEvent event) -> {
             try {
                 addressString = tfHostnameToLookUp.getText();
-                outByteStream = new ByteArrayOutputStream(2048);
+                outByteStream = new ByteArrayOutputStream(4096);
                 outputToServer = new ObjectOutputStream(new BufferedOutputStream(outByteStream));
                 outputToServer.flush();
                 outputToServer.writeObject(addressString);
@@ -107,6 +107,7 @@ public class HW1_Client_UDP extends Application {
                 socket.send(sendPacket);
 
                 rxPacket = new DatagramPacket(rxData, sendData.length);
+                socket.setSoTimeout(3000);
                 socket.receive(rxPacket);
                 rxData = rxPacket.getData();
                 inByteStream = new ByteArrayInputStream(rxData);
